@@ -6,7 +6,7 @@
             "drive_license": "A"
         },
         "engine": {
-            "power": 300
+            "power": 0
         },
         "vehicle_id": 1,
         "make": "BMW",
@@ -21,7 +21,7 @@
             "drive_license": "C"
         },
         "engine": {
-            "power": 900
+            "power": 0
         },
         "vehicle_id": 2,
         "make": "Scania",
