@@ -13,20 +13,59 @@ class InvalidVehicleDataError(VehicleError):
 	def __init__(self, message):
 		super().__init__(message)
 
+class Person:
+	def __init__(self, name: str, age: int):
+		if not isinstance(name, str) or not name:
+			raise ValueError('Безымянный')
+		if not isinstance(age, int) or age < 0:
+			raise ValueError('Возраст должен быть больше 0')
+		self.__name = name
+		self.__age = age
+
+	def to_dict(self):
+		return {
+			"name": self.__name,
+			"age": self.__age,
+		}
+
+	def from_dict(self, data):
+		self.__name = data['name']
+		self.__age = data['age']
+	
+class Driver(Person):
+	def __init__(self, name: str, age: int, drive_license: str):
+		Person.__init__(self, name, age)
+		self.__drive_license = drive_license
+
+	def to_dict(self):
+		data = Person.to_dict(self)
+		data['drive_license'] = self.__drive_license
+		return data
+
+
+	def from_dict(self, data):
+		Person.from_dict(self, data)
+		self.__drive_license = data['drive_license']
+			
+
 class Vehicle:
-	def __init__(self, vehicle_id: int, make: str, model: str, year: int):
+	def __init__(self, driver: Driver, vehicle_id: int, make: str, 
+				 model: str, year: int):
+		self.__driver = driver
 		self.__vehicle_id = vehicle_id
 		self.__make = make
 		self.__model = model
 		self.__year = year
 
 	def to_dict(self):
-		return {
+		data = {
+			"driver":		self.__driver.to_dict(),
 			"vehicle_id":	self.__vehicle_id,
 			"make":			self.__make,
 			"model":		self.__model,
 			"year":			self.__year
 		}
+		return data 
 
 	def from_dict(self, data):
 		self.__vehicle_id = data['vehicle_id'] 
@@ -35,9 +74,9 @@ class Vehicle:
 		self.__year = data['year'] 
 
 class Car(Vehicle):
-	def __init__(self, vehicle_id: int, make: str,
+	def __init__(self, driver: Driver, vehicle_id: int, make: str,
 				 model: str, year: int, doors: int):
-		Vehicle.__init__(self, vehicle_id, make, model, year)
+		Vehicle.__init__(self, driver, vehicle_id, make, model, year)
 		self.__doors = doors
 
 	def to_dict(self):
@@ -50,9 +89,9 @@ class Car(Vehicle):
 		self.__doors = data['doors']
 		
 class Truck(Vehicle):
-	def __init__(self, vehicle_id: int, make: str,
+	def __init__(self, driver: Driver, vehicle_id: int, make: str,
 				 model: str, year: int, capacity: float):
-		Vehicle.__init__(self, vehicle_id, make, model, year)
+		Vehicle.__init__(self, driver, vehicle_id, make, model, year)
 		self.__capacity = capacity 
 
 	def to_dict(self):
@@ -65,9 +104,9 @@ class Truck(Vehicle):
 		self.__capacity= data['capacity']
 
 class Motocycle(Vehicle):
-	def __init__(self, vehicle_id: int, make: str,
+	def __init__(self, driver: Driver, vehicle_id: int, make: str,
 				 model: str, year: int, type_moto: str):
-		Vehicle.__init__(self, vehicle_id, make, model, year)
+		Vehicle.__init__(self, driver, vehicle_id, make, model, year)
 		self.__type_moto = type_moto
 
 	def to_dict(self):
@@ -169,18 +208,22 @@ class VehicleDatabase():
 
 def main():
 	db = VehicleDatabase("aboba")
-	car = Car(1, "BMW", "X5", 2015, 4)
-	car2 = Car(4, "AUDI", "fdg", 2002, 4)
-	truck = Truck(2,  "Scania", "hz", 2010, 200000)
-	moto = Motocycle(3, "Honda", "hz2", 2020, 'sportbike')
+	driver_car = Driver("Grisha", 19, "A")
+	driver_car2 = Driver("Aziz", 18, "B")
+	driver_truck = Driver("Misha", 19, "C")
+	driver_moto = Driver("Nikita", 20, "D")
+	car = Car(driver_car, 1, "BMW", "X5", 2015, 4)
+	car2 = Car(driver_car2, 4, "AUDI", "fdg", 2002, 4)
+	truck = Truck(driver_truck, 2, "Scania", "hz", 2010, 200000)
+	moto = Motocycle(driver_moto, 3, "Honda", "hz2", 2020, 'sportbike')
 	
 	db.add_vehicle(car)
 	db.add_vehicle(truck)
 	db.add_vehicle(moto)
 	db.to_json()
-	db.update_vehicle(1, car2)
+	db.update_vehicle(3, car2)
 	db.to_json()
-	db.delete_vehicle(1)
+	db.delete_vehicle(3)
 	db.to_json()
 
 main()
