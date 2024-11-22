@@ -53,7 +53,6 @@ class Driver(Person):
 		data['drive_license'] = self.__drive_license
 		return data
 
-
 	def from_dict(self, data):
 		Person.from_dict(self, data)
 		self.__drive_license = data['drive_license']
@@ -88,7 +87,7 @@ class Vehicle:
 		data = {
 			"driver":		self.__driver.to_dict(),
 			"engine":		self.__engine.to_dict(),
-			"vehicle_id":	self.__vehicle_id,
+			"vehicle_id":		self.__vehicle_id,
 			"make":			self.__make,
 			"model":		self.__model,
 			"year":			self.__year
@@ -103,12 +102,13 @@ class Vehicle:
 		self.__model = data['model'] 
 		self.__year = data['year'] 
 
+
 class Car(Vehicle):
 	def __init__(self, driver: Driver = Driver(), engine: Engine = Engine(),
 				 vehicle_id: int = 0, make: str = "",
 				 model: str = "", year: int = 0, doors: int = 0):
 		Vehicle.__init__(self, driver, engine,
-						 vehicle_id, make, model, year)
+				 vehicle_id, make, model, year)
 		self.__doors = doors
 
 	def to_dict(self):
@@ -120,12 +120,13 @@ class Car(Vehicle):
 		Vehicle.from_dict(self, data)
 		self.__doors = data['doors']
 		
+
 class Truck(Vehicle):
 	def __init__(self, driver: Driver = Driver(), engine: Engine = Engine(),
 				 vehicle_id: int = 0, make: str = "",
 				 model: str = "", year: int = 0, capacity: float = 0):
 		Vehicle.__init__(self, driver, engine,
-						 vehicle_id, make, model, year)
+				 vehicle_id, make, model, year)
 		self.__capacity = capacity 
 
 	def to_dict(self):
@@ -137,12 +138,13 @@ class Truck(Vehicle):
 		Vehicle.from_dict(self, data)
 		self.__capacity = data['capacity']
 
+
 class Motocycle(Vehicle):
 	def __init__(self, driver: Driver = None, engine: Engine = None,
 				 vehicle_id: int = 0, make: str = "",
 				 model: str = "", year: int = 0, type_moto: str = ""):
 		Vehicle.__init__(self, driver, engine,
-						 vehicle_id, make, model, year)
+				 vehicle_id, make, model, year)
 		self.__type_moto = type_moto
 
 	def to_dict(self):
@@ -153,6 +155,7 @@ class Motocycle(Vehicle):
 	def from_dict(self, data):
 		Vehicle.from_dict(self, data)
 		self.__type_moto = data['type_moto']
+
 
 class File:
 	def __init__(self, filename: str, read: bool):
@@ -166,9 +169,10 @@ class File:
 	def file(self):
 		return self._file
 	
-	def __del__(self):
-		#self._file.close()
+	def close(self):
+		self._file.close()
 		pass
+
 
 class JSON_File(File):
 	def __init__(self, filename: str, read: bool):
@@ -182,6 +186,7 @@ class XML_File(File):
 		if not (filename[-4:] == '.xml'):
 			filename += '.xml'
 		File.__init__(self, filename, read)
+
 
 class VehicleDatabase():
 	def __init__(self, filename: str):
@@ -214,8 +219,9 @@ class VehicleDatabase():
 	def to_json(self):
 		self.__json_file = JSON_File(self.__filename, read=False).file()
 		data = {vehicle_id: vehicle.to_dict()
-					for vehicle_id, vehicle in self.__vehicles.items()}
+			for vehicle_id, vehicle in self.__vehicles.items()}
 		json.dump(data, self.__json_file, indent=4)
+		self.__json_file.close()
 	
 	def from_json(self, obj: 'VehicleDatabase'):
 		if obj == None:
@@ -233,6 +239,7 @@ class VehicleDatabase():
 				continue
 			vehicle.from_dict(veh_data)
 			self.add_vehicle(vehicle)
+		obj.__json_file.close()
 				
 
 def main():
