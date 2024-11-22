@@ -19,10 +19,10 @@ class Vehicle:
 
 	def to_dict(self):
 		return {
-			"vehicle_id": self.__vehicle_id,
-			"make":		  self.__make,
-			"model":	  self.__model,
-			"year":		  self.__year
+			"vehicle_id":	self.__vehicle_id,
+			"make":			self.__make,
+			"model":		self.__model,
+			"year":			self.__year
 		}
 
 	def from_dict(self, data):
