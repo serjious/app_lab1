@@ -88,6 +88,10 @@ class File:
 
 	def file(self):
 		return self._file
+	
+	def __del__(self):
+		#self._file.close()
+		pass
 
 class JSON_File(File):
 	def __init__(self, filename: str):
@@ -122,35 +126,56 @@ class VehicleDatabase():
 			raise VehicleNotFoundError(vehicle_id)
 		return self.__vehicles[vehicle_id]
 	
-	def update_vehicle(self, vehicle: Vehicle):
-		if vehicle.to_dict()['vehicle_id'] not in self.__vehicles:
-			raise VehicleNotFoundError(vehicle.to_dict()['vehicle_id'])
-		self.__vehicles[vehicle.to_dict()['vehicle_id']] = vehicle
+	def update_vehicle(self, vehicle_id: int, vehicle: Vehicle):
+		if vehicle_id not in self.__vehicles:
+			raise VehicleNotFoundError(vehicle_id)
+		self.__vehicles[vehicle_id] = vehicle
 
 	def delete_vehicle(self, vehicle_id: int):
 		if vehicle_id not in self.__vehicles:
 			raise VehicleNotFoundError(vehicle_id)
-		self.__vehicles[vehicle_id].remove()
+		self.__vehicles.pop(vehicle_id)
 
-	def to_json(self) -> str:
+	def to_json(self):
+		self.__json_file.seek(0, 0)
 		data = {vehicle_id: vehicle.to_dict()
 					for vehicle_id, vehicle in self.__vehicles.items()}
 		json.dump(data, self.__json_file, indent=4)
+	
+	def from_json(self):
+		self.__json_file.seek(0, 0)
+		data = json.load(self.__json_file)
+		for veh_id, veh_data in data.items():
+			if 'doors' in veh_data:
+				vehicle = Car(veh_id, veh_data['make'], veh_data['model'],
+							  veh_data['year'], veh_data['doors'])
+			elif 'capacity' in veh_data:
+				vehicle = Truck(veh_id, veh_data['make'], veh_data['model'],
+							  veh_data['year'], veh_data['capacity'])
+			elif 'type_moto' in veh_data:
+				vehicle = Motocycle(veh_id, veh_data['make'],
+									veh_data['model'], veh_data['year'],
+									veh_data['type_moto'])
+			else:
+				continue
+			self.add_vehicle(vehicle)
+				
 
 def main():
 	db = VehicleDatabase("aboba")
 	car = Car(1, "BMW", "X5", 2015, 4)
+	car2 = Car(4, "AUDI", "fdg", 2002, 4)
 	truck = Truck(2,  "Scania", "hz", 2010, 200000)
 	moto = Motocycle(3, "Honda", "hz2", 2020, 'sportbike')
 	
 	db.add_vehicle(car)
 	db.add_vehicle(truck)
 	db.add_vehicle(moto)
-	
+	db.to_json()
+	db.update_vehicle(1, car2)
+	db.to_json()
+	db.delete_vehicle(2)
 	db.to_json()
 
-
-
-
-
 main()
+
