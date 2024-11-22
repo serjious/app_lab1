@@ -1,3 +1,5 @@
+import json
+
 class VehicleError(Exception):
 	pass
 
@@ -76,14 +78,78 @@ class Motocycle(Vehicle):
 		Vehicle.from_dict(self, data)
 		self.__type_moto = data['type_moto']
 
+class File:
+	def __init__(self, filename: str):
+		try:
+			self._file = open(filename, "w+")
+		except OSError as e:
+			print(e)
+			exit(1)
+
+	def file(self):
+		return self._file
+
+class JSON_File(File):
+	def __init__(self, filename: str):
+		if not (filename[-5:] == '.json'):
+			filename += '.json'
+		File.__init__(self, filename)
+	
+		
+class XML_File(File):
+	def __init__(self, filename: str):
+		if not (filename[-4:] == '.xml'):
+			filename += '.xml'
+		File.__init__(self, filename)
+
+class VehicleDatabase():
+	def __init__(self, filename: str):
+		self.__json_file = JSON_File(filename).file()
+		self.__xml_file = XML_File(filename).file()
+		self.__vehicles = {}
+		self.__filename = filename
+	
+	def add_vehicle(self, vehicle: Vehicle):
+		id_veh = vehicle.to_dict()['vehicle_id']
+		if id_veh in self.__vehicles:
+			raise InvalidVehicleDataError(
+				f"Транспорт {id_veh} уже существует"
+			)
+		self.__vehicles[id_veh] = vehicle
+
+	def get_vehicle(self, vehicle_id: int) -> Vehicle:
+		if vehicle_id not in self.__vehicles:
+			raise VehicleNotFoundError(vehicle_id)
+		return self.__vehicles[vehicle_id]
+	
+	def update_vehicle(self, vehicle: Vehicle):
+		if vehicle.to_dict()['vehicle_id'] not in self.__vehicles:
+			raise VehicleNotFoundError(vehicle.to_dict()['vehicle_id'])
+		self.__vehicles[vehicle.to_dict()['vehicle_id']] = vehicle
+
+	def delete_vehicle(self, vehicle_id: int):
+		if vehicle_id not in self.__vehicles:
+			raise VehicleNotFoundError(vehicle_id)
+		self.__vehicles[vehicle_id].remove()
+
+	def to_json(self) -> str:
+		data = {vehicle_id: vehicle.to_dict()
+					for vehicle_id, vehicle in self.__vehicles.items()}
+		json.dump(data, self.__json_file, indent=4)
 
 def main():
+	db = VehicleDatabase("aboba")
 	car = Car(1, "BMW", "X5", 2015, 4)
 	truck = Truck(2,  "Scania", "hz", 2010, 200000)
 	moto = Motocycle(3, "Honda", "hz2", 2020, 'sportbike')
-	print(car.to_dict())
-	print(truck.to_dict())
-	print(moto.to_dict())
+	
+	db.add_vehicle(car)
+	db.add_vehicle(truck)
+	db.add_vehicle(moto)
+	
+	db.to_json()
+
+
 
 
 
