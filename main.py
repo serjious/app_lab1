@@ -1,4 +1,5 @@
 import json
+import os
 
 class VehicleError(Exception):
 	pass
@@ -79,9 +80,15 @@ class Motocycle(Vehicle):
 		self.__type_moto = data['type_moto']
 
 class File:
-	def __init__(self, filename: str):
+	def __init__(self, filename: str, read: bool):
 		try:
-			self._file = open(filename, "w+")
+			if not read:
+				if (os.path.isfile(filename)):
+					os.remove(filename)	
+				self._file = open(filename, "w")
+			else:
+				self._file = open(filename, "r")
+			
 		except OSError as e:
 			print(e)
 			exit(1)
@@ -94,22 +101,21 @@ class File:
 		pass
 
 class JSON_File(File):
-	def __init__(self, filename: str):
+	def __init__(self, filename: str, read: bool):
 		if not (filename[-5:] == '.json'):
 			filename += '.json'
-		File.__init__(self, filename)
+		File.__init__(self, filename, read)
 	
 		
 class XML_File(File):
-	def __init__(self, filename: str):
+	def __init__(self, filename: str, read: bool):
 		if not (filename[-4:] == '.xml'):
 			filename += '.xml'
-		File.__init__(self, filename)
+		File.__init__(self, filename, read)
 
 class VehicleDatabase():
 	def __init__(self, filename: str):
-		self.__json_file = JSON_File(filename).file()
-		self.__xml_file = XML_File(filename).file()
+		self.__filename = filename
 		self.__vehicles = {}
 		self.__filename = filename
 	
@@ -137,13 +143,13 @@ class VehicleDatabase():
 		self.__vehicles.pop(vehicle_id)
 
 	def to_json(self):
-		self.__json_file.seek(0, 0)
+		self.__json_file = JSON_File(self.__filename, read=False).file()
 		data = {vehicle_id: vehicle.to_dict()
 					for vehicle_id, vehicle in self.__vehicles.items()}
 		json.dump(data, self.__json_file, indent=4)
 	
 	def from_json(self):
-		self.__json_file.seek(0, 0)
+		self.__json_file = JSON_File(self.__filename, read=True).file()
 		data = json.load(self.__json_file)
 		for veh_id, veh_data in data.items():
 			if 'doors' in veh_data:
@@ -174,7 +180,7 @@ def main():
 	db.to_json()
 	db.update_vehicle(1, car2)
 	db.to_json()
-	db.delete_vehicle(2)
+	db.delete_vehicle(1)
 	db.to_json()
 
 main()
