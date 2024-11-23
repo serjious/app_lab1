@@ -21,6 +21,10 @@ class IODataBaseError(TusovaError):
 	def __init__(self, message):
 		super().__init__(message)
 
+class FileError(TusovaError):
+	def __init__(self, filename, message):
+		super().__init__(f"{filename}: message")
+
 
 class DriveLicense:
 	def __init__(self, driver_license: str):
@@ -236,7 +240,7 @@ class File:
 class JSON_File(File):
 	def __init__(self, filename: str, read: bool):
 		if not filename:
-			raise ValueError(f"Невозможно создать файл с именем {filename}")
+			raise FileError(filename, "Невозможно создать файл с таким именем") 
 		if not (filename[-5:] == '.json'):
 			filename += '.json'
 		File.__init__(self, filename, read, False)
@@ -245,7 +249,7 @@ class JSON_File(File):
 class XML_File(File):
 	def __init__(self, filename: str, read: bool):
 		if not filename:
-			raise ValueError(f"Невозможно создать файл с именем {filename}")
+			raise FileError(filename, "Невозможно создать файл с таким именем") 
 		if not (filename[-4:] == '.xml'):
 			filename += '.xml'
 		File.__init__(self, filename, read, True)
@@ -365,12 +369,20 @@ def main():
 	gg.from_json(db)
 	gg.to_json()
 
-main()
-'''
+
 try:
 	main()
+except IOError as e:
+	print(f"Невозможно открыть файл {e}")
+except FileError as e:
+	print(e)
+except VehicleNotFoundError as e: 
+	print(e)
+except IODataBaseError as e:
+	print(f"Ошибка в базе данных {e}")
+except InvalidVehicleDataError as e:
+	print(f"Некорректные данные для транспорта {e}")
 except Exception as e:
 	print(e)
-	exit(1)
-'''
-
+except ...:
+	print("неизвестно")
