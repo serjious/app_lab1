@@ -34,7 +34,9 @@ class Ticket:
 		if ticket_id < 0:
 			raise ValueError('ticket_id должен быть больше 0')
 		self._ticket_id = ticket_id
-
+	
+	def get_ticket_id(self):
+		return self._ticket_id	
 
 class Person:
 	def __init__(self, name: str = "", age: int = 0):
@@ -205,8 +207,8 @@ class Bus(Vehicle):
 
 	def to_dict(self):
 		data = Vehicle.to_dict(self)
-		z = self.__passangers[0].to_dict()
-		print(z)
+		z = {i.get_ticket_id() : i.to_dict() for i in self.__passangers}
+		data["passangers"] = z
 		return data
 	
 	def from_dict(self, data):
@@ -280,8 +282,7 @@ class VehicleDatabase():
 		self.__json_file = JSON_File(self.__filename, read=False).file()
 		data = {vehicle_id: vehicle.to_dict()
 			for vehicle_id, vehicle in self.__vehicles.items()}
-		print(data)
-		#json.dump(data, self.__json_file, indent=4)
+		json.dump(data, self.__json_file, indent=4)
 		self.__json_file.close()
 	
 	def from_json(self, obj: 'VehicleDatabase'):

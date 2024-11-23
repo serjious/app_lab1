@@ -1,0 +1,78 @@
+{
+    "1": {
+        "driver": {
+            "name": "Grisha",
+            "age": 19,
+            "drive_license": "A"
+        },
+        "engine": {
+            "power": 300
+        },
+        "vehicle_id": 1,
+        "make": "BMW",
+        "model": "X5",
+        "year": 2015,
+        "doors": 4
+    },
+    "2": {
+        "driver": {
+            "name": "Misha",
+            "age": 19,
+            "drive_license": "C"
+        },
+        "engine": {
+            "power": 900
+        },
+        "vehicle_id": 2,
+        "make": "Scania",
+        "model": "hz",
+        "year": 2010,
+        "capacity": 200000
+    },
+    "3": {
+        "driver": {
+            "name": "Nikita",
+            "age": 20,
+            "drive_license": "B"
+        },
+        "engine": {
+            "power": 350
+        },
+        "vehicle_id": 3,
+        "make": "Honda",
+        "model": "hz2",
+        "year": 2020,
+        "type_moto": "sportbike"
+    },
+    "4": {
+        "driver": {
+            "name": "Igor",
+            "age": 19,
+            "drive_license": "None"
+        },
+        "engine": {
+            "power": 600
+        },
+        "vehicle_id": 4,
+        "make": "kamaz",
+        "model": "dw",
+        "year": 2017,
+        "passangers": {
+            "1": {
+                "name": "Dima",
+                "age": 19,
+                "ticket": 1
+            },
+            "2": {
+                "name": "Vova",
+                "age": 19,
+                "ticket": 2
+            },
+            "3": {
+                "name": "Lesha",
+                "age": 19,
+                "ticket": 3
+            }
+        }
+    }
+}
