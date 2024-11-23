@@ -207,7 +207,12 @@ class Bus(Vehicle):
 	
 	def from_dict(self, data):
 		Vehicle.from_dict(self, data)
-
+		self.__passangers = []
+		for i, pas in data['passangers'].items():
+			passangers = Passenger()
+			passangers.from_dict(pas)
+			self.__passangers.append(passangers)
+		
 
 class File:
 	def __init__(self, filename: str, read: bool):
@@ -291,6 +296,8 @@ class VehicleDatabase():
 				vehicle = Truck() 
 			elif 'type_moto' in veh_data:
 				vehicle = Motocycle() 
+			elif 'passangers' in veh_data:
+				vehicle = Bus()
 			else:
 				continue
 			vehicle.from_dict(veh_data)
@@ -324,8 +331,8 @@ def main():
 	#db.to_json()
 	#db.delete_vehicle(3)
 	db.to_json()
-	#gg.from_json(db)
-	#gg.to_json()
+	gg.from_json(db)
+	gg.to_json()
 
 main()
 '''

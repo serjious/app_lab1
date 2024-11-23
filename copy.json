@@ -28,5 +28,51 @@
         "model": "hz",
         "year": 2010,
         "capacity": 200000
+    },
+    "3": {
+        "driver": {
+            "name": "Nikita",
+            "age": 20,
+            "drive_license": "B"
+        },
+        "engine": {
+            "power": 0
+        },
+        "vehicle_id": 3,
+        "make": "Honda",
+        "model": "hz2",
+        "year": 2020,
+        "type_moto": "sportbike"
+    },
+    "4": {
+        "driver": {
+            "name": "Igor",
+            "age": 19,
+            "drive_license": "None"
+        },
+        "engine": {
+            "power": 0
+        },
+        "vehicle_id": 4,
+        "make": "kamaz",
+        "model": "dw",
+        "year": 2017,
+        "passangers": {
+            "1": {
+                "name": "Dima",
+                "age": 19,
+                "ticket": 1
+            },
+            "2": {
+                "name": "Vova",
+                "age": 19,
+                "ticket": 2
+            },
+            "3": {
+                "name": "Lesha",
+                "age": 19,
+                "ticket": 3
+            }
+        }
     }
 }
