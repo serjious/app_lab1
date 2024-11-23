@@ -1,4 +1,5 @@
 import json
+import xml.etree.ElementTree as ET
 import os
 
 class TusovaError(Exception):
@@ -37,6 +38,7 @@ class Ticket:
 	
 	def get_ticket_id(self):
 		return self._ticket_id	
+
 
 class Person:
 	def __init__(self, name: str = "", age: int = 0):
@@ -215,13 +217,13 @@ class Bus(Vehicle):
 		
 
 class File:
-	def __init__(self, filename: str, read: bool):
+	def __init__(self, filename: str, read: bool, binary: bool):
 		if not read:
 			if (os.path.isfile(filename)):
 				os.remove(filename)	
-			self._file = open(filename, "w")
+			self._file = open(filename, "wb" if binary else "w")
 		else:
-			self._file = open(filename, "r")
+			self._file = open(filename, "rb" if binary else "r")
 			
 	def file(self):
 		return self._file
@@ -237,7 +239,7 @@ class JSON_File(File):
 			raise ValueError(f"Невозможно создать файл с именем {filename}")
 		if not (filename[-5:] == '.json'):
 			filename += '.json'
-		File.__init__(self, filename, read)
+		File.__init__(self, filename, read, False)
 	
 		
 class XML_File(File):
@@ -246,7 +248,7 @@ class XML_File(File):
 			raise ValueError(f"Невозможно создать файл с именем {filename}")
 		if not (filename[-4:] == '.xml'):
 			filename += '.xml'
-		File.__init__(self, filename, read)
+		File.__init__(self, filename, read, True)
 
 
 class VehicleDatabase():
@@ -303,7 +305,37 @@ class VehicleDatabase():
 			vehicle.from_dict(veh_data)
 			self.add_vehicle(vehicle)
 		obj.__json_file.close()
-				
+	
+	def __dict_to_xml(self, tag, d):
+		elem = ET.Element(str(tag))
+		for key, val in d.items():
+			child = ET.SubElement(elem, str(key))
+		if isinstance(val, dict):
+			child.append(self.__dict_to_xml(key, val))
+		else:
+			child.text = str(val)	
+		return elem
+		
+	def __escape_xml(self, text):
+		return (
+			text
+			.replace("&", "&amp;")
+			.replace("<", "&lt;")
+			.replace(">", "&gt;")
+			.replace('"', "&quot;")
+			.replace("'", "&apos;")
+		)
+		
+	def to_xml(self):
+		file = XML_File(self.__filename, read=False).file()
+		data = {vehicle_id: vehicle.to_dict()
+			for vehicle_id, vehicle in self.__vehicles.items()}
+		xml_element = self.__dict_to_xml("root", data)
+		tree = ET.ElementTree(xml_element)
+		ET.indent(tree, "    ")
+		tree.write(file, encoding="utf-8", xml_declaration=True)
+		file.close()
+	
 
 def main():
 	db = VehicleDatabase("aboba")
@@ -331,6 +363,7 @@ def main():
 	#db.to_json()
 	#db.delete_vehicle(3)
 	db.to_json()
+	db.to_xml()
 	gg.from_json(db)
 	gg.to_json()
 
