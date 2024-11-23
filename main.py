@@ -105,15 +105,13 @@ class Engine:
 
 
 class Vehicle:
-	def __init__(self, driver: Driver = Driver(), engine: Engine = Engine(), 
+	def __init__(self, driver: Driver = Driver(), engine: int = 0, 
 			vehicle_id: int = 0, make: str = "",
 			model: str = None, year: int = 0):
 		if not isinstance(driver, Driver):
 			raise TypeError('Некорректный тип driver}')
-		if not isinstance(engine, Engine):
-			raise TypeError('Некорректный тип engine}')
 		self.__driver = driver
-		self.__engine = engine
+		self.__engine = Engine(engine)
 		self.__vehicle_id = vehicle_id
 		self.__make = make
 		self.__model = model
@@ -140,15 +138,11 @@ class Vehicle:
 
 
 class Car(Vehicle):
-	def __init__(self, driver: Driver = Driver(), engine: Engine = Engine(),
+	def __init__(self, driver: Driver = Driver(), engine: int = 0,
 			vehicle_id: int = 0, make: str = "",
 			model: str = "", year: int = 0, doors: int = 0):
 		Vehicle.__init__(self, driver, engine,
 				 vehicle_id, make, model, year)
-		if not isinstance(driver, Driver):
-			raise TypeError('Некорректный тип driver}')
-		if not isinstance(engine, Engine):
-			raise TypeError('Некорректный тип engine}')
 		self.__doors = doors
 
 	def to_dict(self):
@@ -162,7 +156,7 @@ class Car(Vehicle):
 		
 
 class Truck(Vehicle):
-	def __init__(self, driver: Driver = Driver(), engine: Engine = Engine(),
+	def __init__(self, driver: Driver = Driver(), engine: int = 0,
 			vehicle_id: int = 0, make: str = "",
 			model: str = "", year: int = 0, capacity: float = 0):
 		Vehicle.__init__(self, driver, engine,
@@ -180,7 +174,7 @@ class Truck(Vehicle):
 
 
 class Motocycle(Vehicle):
-	def __init__(self, driver: Driver = None, engine: Engine = None,
+	def __init__(self, driver: Driver = Driver(), engine: int = 0,
 			vehicle_id: int = 0, make: str = "",
 			model: str = "", year: int = 0, type_moto: str = ""):
 		Vehicle.__init__(self, driver, engine,
@@ -198,7 +192,7 @@ class Motocycle(Vehicle):
 
 
 class Bus(Vehicle):
-	def __init__(self, driver: Driver = None, engine: Engine = None,
+	def __init__(self, driver: Driver = Driver(), engine: int = 0,
 			vehicle_id: int = 0, make: str = "",
 			model: str = "", year: int = 0, passangers: list = []):
 		Vehicle.__init__(self, driver, engine,
@@ -310,20 +304,16 @@ def main():
 	pass1 = Passenger("Dima", 19, 1)
 	pass2 = Passenger("Vova", 19, 2)
 	pass3 = Passenger("Lesha", 19, 3)
-	en_car = Engine(300)
-	en_moto = Engine(350)
-	en_truck = Engine(900)
-	en_bus = Engine(600)
 	driver_car = Driver("Grisha", 19, "A")
 	driver_car2 = Driver("Aziz", 18, "A")
 	driver_truck = Driver("Misha", 19, "C")
 	driver_moto = Driver("Nikita", 20, "B")
 	driver_bus = Driver("Igor", 19, "С")
-	car = Car(driver_car, en_car, 1, "BMW", "X5", 2015, 4)
-	car2 = Car(driver_car2, en_car, 5, "AUDI", "fdg", 2002, 4)
-	truck = Truck(driver_truck, en_truck, 2, "Scania", "hz", 2010, 200000)
-	moto = Motocycle(driver_moto, en_moto, 3, "Honda", "hz2", 2020, 'sportbike')
-	bus = Bus(driver_bus, en_bus, 4, "kamaz", "dw", 2017, [pass1, pass2, pass3])
+	car = Car(driver_car, 300, 1, "BMW", "X5", 2015, 4)
+	car2 = Car(driver_car2, 150, 5, "AUDI", "fdg", 2002, 4)
+	truck = Truck(driver_truck, 900, 2, "Scania", "hz", 2010, 200000)
+	moto = Motocycle(driver_moto, 150, 3, "Honda", "hz2", 2020, 'sportbike')
+	bus = Bus(driver_bus, 600, 4, "kamaz", "dw", 2017, [pass1, pass2, pass3])
 	
 	db.add_vehicle(car)
 	db.add_vehicle(truck)
