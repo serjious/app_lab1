@@ -1,29 +1,111 @@
 <?xml version='1.0' encoding='utf-8'?>
 <root>
-    <1 />
-    <2 />
-    <3 />
-    <4>
-        <4>
-            <driver />
-            <engine />
-            <vehicle_id />
-            <make />
-            <model />
-            <year />
-            <passangers>
-                <passangers>
-                    <1 />
-                    <2 />
-                    <3>
-                        <3>
-                            <name />
-                            <age />
-                            <ticket>3</ticket>
-                        </3>
-                    </3>
-                </passangers>
-            </passangers>
-        </4>
-    </4>
+  <ID_vehicle_1>
+    <ID_vehicle_1>
+      <driver>
+        <driver>
+          <name>Grisha</name>
+          <age>19</age>
+          <drive_license>A</drive_license>
+        </driver>
+      </driver>
+      <engine>
+        <engine>
+          <power>300</power>
+        </engine>
+      </engine>
+      <vehicle_id>1</vehicle_id>
+      <make>BMW</make>
+      <model>X5</model>
+      <year>2015</year>
+      <doors>4</doors>
+    </ID_vehicle_1>
+  </ID_vehicle_1>
+  <ID_vehicle_2>
+    <ID_vehicle_2>
+      <driver>
+        <driver>
+          <name>Misha</name>
+          <age>19</age>
+          <drive_license>C</drive_license>
+        </driver>
+      </driver>
+      <engine>
+        <engine>
+          <power>900</power>
+        </engine>
+      </engine>
+      <vehicle_id>2</vehicle_id>
+      <make>Scania</make>
+      <model>hz</model>
+      <year>2010</year>
+      <capacity>200000</capacity>
+    </ID_vehicle_2>
+  </ID_vehicle_2>
+  <ID_vehicle_3>
+    <ID_vehicle_3>
+      <driver>
+        <driver>
+          <name>Nikita</name>
+          <age>20</age>
+          <drive_license>B</drive_license>
+        </driver>
+      </driver>
+      <engine>
+        <engine>
+          <power>150</power>
+        </engine>
+      </engine>
+      <vehicle_id>3</vehicle_id>
+      <make>Honda</make>
+      <model>hz2</model>
+      <year>2020</year>
+      <type_moto>sportbike</type_moto>
+    </ID_vehicle_3>
+  </ID_vehicle_3>
+  <ID_vehicle_4>
+    <ID_vehicle_4>
+      <driver>
+        <driver>
+          <name>Igor</name>
+          <age>19</age>
+          <drive_license>None</drive_license>
+        </driver>
+      </driver>
+      <engine>
+        <engine>
+          <power>600</power>
+        </engine>
+      </engine>
+      <vehicle_id>4</vehicle_id>
+      <make>kamaz</make>
+      <model>dw</model>
+      <year>2017</year>
+      <passangers>
+        <passangers>
+          <ID_pas_1>
+            <ID_pas_1>
+              <name>Dima</name>
+              <age>19</age>
+              <ticket>1</ticket>
+            </ID_pas_1>
+          </ID_pas_1>
+          <ID_pas_2>
+            <ID_pas_2>
+              <name>Vova</name>
+              <age>19</age>
+              <ticket>2</ticket>
+            </ID_pas_2>
+          </ID_pas_2>
+          <ID_pas_3>
+            <ID_pas_3>
+              <name>Lesha</name>
+              <age>19</age>
+              <ticket>3</ticket>
+            </ID_pas_3>
+          </ID_pas_3>
+        </passangers>
+      </passangers>
+    </ID_vehicle_4>
+  </ID_vehicle_4>
 </root>

@@ -203,7 +203,7 @@ class Bus(Vehicle):
 
 	def to_dict(self):
 		data = Vehicle.to_dict(self)
-		z = {i.get_ticket_id() : i.to_dict() for i in self.__passangers}
+		z = {f"ID_pas_{i.get_ticket_id()}" : i.to_dict() for i in self.__passangers}
 		data["passangers"] = z
 		return data
 	
@@ -280,17 +280,17 @@ class VehicleDatabase():
 		self.__vehicles.pop(vehicle_id)
 
 	def to_json(self):
-		self.__json_file = JSON_File(self.__filename, read=False).file()
-		data = {vehicle_id: vehicle.to_dict()
+		file = JSON_File(self.__filename, read=False).file()
+		data = {f"ID:{vehicle_id}": vehicle.to_dict()
 			for vehicle_id, vehicle in self.__vehicles.items()}
-		json.dump(data, self.__json_file, indent=4)
-		self.__json_file.close()
+		json.dump(data, file, indent=4)
+		file.close()
 	
-	def from_json(self, obj: 'VehicleDatabase'):
+	def from_json(self, obj: 'VehicleDatabase' = None):
 		if obj == None:
 			raise IODataBaseError("Нет объекта для записи")
-		obj.__json_file = JSON_File(obj.__filename, read=True).file()
-		data = json.load(obj.__json_file)
+		file = JSON_File(obj.__filename, read=True).file()
+		data = json.load(file)
 		for veh_id, veh_data in data.items():
 			if 'doors' in veh_data:
 				vehicle = Car()
@@ -304,38 +304,36 @@ class VehicleDatabase():
 				continue
 			vehicle.from_dict(veh_data)
 			self.add_vehicle(vehicle)
-		obj.__json_file.close()
+		file.close()
 	
 	def __dict_to_xml(self, tag, d):
 		elem = ET.Element(str(tag))
 		for key, val in d.items():
 			child = ET.SubElement(elem, str(key))
-		if isinstance(val, dict):
-			child.append(self.__dict_to_xml(key, val))
-		else:
-			child.text = str(val)	
+			if isinstance(val, dict):
+				child.append(self.__dict_to_xml(key, val))
+			else:
+				child.text = str(val) 
 		return elem
-		
-	def __escape_xml(self, text):
-		return (
-			text
-			.replace("&", "&amp;")
-			.replace("<", "&lt;")
-			.replace(">", "&gt;")
-			.replace('"', "&quot;")
-			.replace("'", "&apos;")
-		)
 		
 	def to_xml(self):
 		file = XML_File(self.__filename, read=False).file()
-		data = {vehicle_id: vehicle.to_dict()
+		data = {f"ID_vehicle_{vehicle_id}": vehicle.to_dict()
 			for vehicle_id, vehicle in self.__vehicles.items()}
 		xml_element = self.__dict_to_xml("root", data)
 		tree = ET.ElementTree(xml_element)
-		ET.indent(tree, "    ")
+		ET.indent(tree, "  ")
 		tree.write(file, encoding="utf-8", xml_declaration=True)
 		file.close()
-	
+
+	def from_xml(self, obj: 'VehicleDatabase' = None):
+		if obj == None:
+			raise IODataBaseError("Нет объекта для записи")
+		
+		file = XML_File(obj.__filename, read=True).file()
+		tree = ET.parse(file)
+		root = tree.getroot()
+		file.close()
 
 def main():
 	db = VehicleDatabase("aboba")
